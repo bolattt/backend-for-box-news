@@ -6,10 +6,10 @@ const url =
 
 app.get("/", (req, res) => {
   const id = req.query.id;
-  //   axios.get(url).then((response) => {
-  //     res.send(JSON.stringify(response.data.articles));
-  //   });
-  res.send(`id:${id}`);
+  axios.get(url).then((response) => {
+    //   res.send(JSON.stringify(response.data.articles));
+    res.json(response.data.articles);
+  });
 });
 
 const PORT = process.env.PORT || 8080;
