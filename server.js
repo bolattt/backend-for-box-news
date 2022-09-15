@@ -12,7 +12,7 @@ app.use(cors());
 app.get("/", (req, res) => {
   const keyword = req.query.keyword;
   if (keyword) {
-    keyword = keyword.replaceAll(" ", "%");
+    keyword = keyword.trim().split(" ").join("%20");
     console.log(keyword);
     // url =
     //   input +
