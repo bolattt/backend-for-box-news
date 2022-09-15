@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 
 app.get("/", (req, res) => {
-  const keyword = req.query.keyword;
+  let keyword = req.query.keyword;
   if (keyword) {
     keyword = keyword.trim().split(" ").join("%20");
     console.log(keyword);
