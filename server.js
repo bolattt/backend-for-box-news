@@ -3,11 +3,28 @@ const axios = require("axios");
 const cors = require("cors");
 const apiKey1 = "9a3c6ce90d4b4958a771bfc5370df6b1";
 const apiKey2 = "43f35ad711e440ec977ce87079f2a215";
+const { JSDOM } = require("jsdom");
+const { Readability } = require("@mozilla/readability");
+
 // let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey2}`;
 
 const app = express();
 
 app.use(cors());
+
+app.get("/details", (req, res) => {
+  const url = req.query.url;
+
+  axios.get(url).then((html) => {
+    let dom = new JSDOM(html.data, {
+      url: url,
+    });
+    let article = new Readability(dom.window.document).parse();
+    // console.log(article.textContent);
+    console.log(article.content);
+    res.json(article.content);
+  });
+});
 
 app.get("/", (req, res) => {
   let keyword = req.query.keyword;
@@ -27,6 +44,18 @@ app.get("/", (req, res) => {
   axios
     .get(url)
     .then((response) => {
+      const firstResult = response.data.articles[0];
+      console.log(firstResult.url);
+      if (!firstResult.url.includes("www.youtube.com")) {
+        axios.get(firstResult.url).then((html) => {
+          let dom = new JSDOM(html.data, {
+            url: firstResult.url,
+          });
+          let article = new Readability(dom.window.document).parse();
+          // console.log(article.textContent);
+        });
+      }
+
       res.json(response.data.articles);
     })
     .catch((err) => console.log(err));
